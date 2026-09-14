@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - CSAU Event Hub</title>
+    <style>
+        :root {
+            --bg-color: #faf8fc;
+            --card-bg: #ffffff;
+            --text-main: #2e1a47;
+            --text-muted: #6b5b7a;
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --border: #e9d5ff;
+            --badge-bg: rgba(139, 92, 246, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(139, 92, 246, 0.05);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.375rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            flex: 1;
+        }
+
+        /* Auth Container Styles */
+        .auth-wrapper {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.06);
+        }
+
+        .auth-wrapper h2 {
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .auth-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .auth-switch span {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 0.75rem;
+            display: none;
+        }
+        .success-msg {
+            color: #059669;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 0.75rem;
+            display: none;
+        }
+        /* View Switching */
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+        }
+        .hero {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .filters {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .filter-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+        .event-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(139, 92, 246, 0.04);
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+        .event-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.1);
+        }
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        .event-badge {
+            background-color: var(--badge-bg);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .event-date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+        .event-desc {
+            color: var(--text-muted);
+            font-size: 0.925rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        .venue-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .rsvp-btn {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .rsvp-btn:hover {
+            background-color: var(--accent-hover);
+        }
+        .rsvp-btn.registered {
+            background-color: #059669;
+        }
+        /* Student Dashboard / My RSVPs Table */
+        .dashboard-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(139, 92, 246, 0.04);
+        }
+        .dashboard-header {
+            margin-bottom: 1.5rem;
+        }
+        .dashboard-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .dashboard-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.925rem;
+        }
+
+        th {
+            background-color: #f3e8ff;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background-color: var(--card-bg);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .events-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUTHENTICATION VIEW -->
+    <div id="auth-view" class="auth-wrapper">
+        <h2 id="auth-title">Student Sign In</h2>
+        <p class="auth-subtitle" id="auth-subtitle">Access your event portal</p>
+        
+        <form id="auth-form" onsubmit="handleAuth(event)">
+            <div class="form-group" id="name-group" style="display: none;">
+                <label>Full Name</label>
+                <input type="text" id="reg-name" placeholder="Jayasree B">
+            </div>
+            <div class="form-group">
+                <label>Student Email / Register Number</label>
+                <input type="text" id="reg-email" placeholder="2025503011" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="reg-password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="auth-btn" id="auth-submit-btn">Sign In</button>
+            <div id="auth-error" class="error-msg"></div>
+            <div id="auth-success" class="success-msg"></div>
+        </form>
+
+        <div class="auth-switch" id="auth-switch-text">
+            Don't have an account? <span onclick="toggleAuthMode()">Sign Up</span>
+        </div>
+    </div>
+
+    <!-- MAIN APP VIEW (Protected) -->
+    <div id="app-view" style="display: none; flex: 1; flex-direction: column;">
+        <header>
+            <div class="logo">⚡ Campus Connect</div>
+            <ul class="nav-links">
+                <li><a onclick="switchTab('events')" id="nav-events" class="active">Events</a></li>
+                <li><a onclick="switchTab('dashboard')" id="nav-dashboard">My RSVPs (<span id="rsvp-count">0</span>)</a></li>
+                <li><span id="user-display" style="font-size: 0.85rem; color: var(--text-main); font-weight: 600;"></span></li>
+                <li><button class="logout-btn" onclick="handleLogout()">Logout</button></li>
+            </ul>
+        </header>
+
+        <main>
+            <!-- TAB 1: EVENTS CATALOG -->
+            <div id="tab-events" class="view-section active">
+                <section class="hero">
+                    <h1>Explore Campus Tech Events</h1>
+                    <p>Discover hackathons, workshops, and coding challenges organized by CSAU and partner clubs.</p>
+                </section>
+
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterEvents('all')">All Events</button>
+                    <button class="filter-btn" onclick="filterEvents('Technical')">Technical</button>
+                    <button class="filter-btn" onclick="filterEvents('Coding')">Coding</button>
+                    <button class="filter-btn" onclick="filterEvents('Workshop')">Workshop</button>
+                </div>
+
+                <div class="events-grid" id="eventsGrid">
+                    <!-- Event Card 1 -->
+                    <div class="event-card" data-category="Coding" data-id="1">
+                        <div>
+                            <div class="event-header">
+                                <span class="event-badge">Coding</span>
+                                <span class="event-date">Oct 15, 2026</span>
+                            </div>
+                            <h3 class="event-title">Algorithmic Battle 3.0</h3>
+                            <p class="event-desc">Test your data structures and problem-solving skills against the best programmers in an intensive online coding sprint.</p>
+                        </div>
+                        <div class="event-footer">
+                            <span class="venue-info">Online (HackerRank)</span>
+                            <button class="rsvp-btn" onclick="handleRSVP(this, '1', 'Algorithmic Battle 3.0', 'Oct 15, 2026', 'Online (HackerRank)')">RSVP Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Event Card 2 -->
+                    <div class="event-card" data-category="Technical" data-id="2">
+                        <div>
+                            <div class="event-header">
+                                <span class="event-badge">Technical</span>
+                                <span class="event-date">Oct 22, 2026</span>
+                            </div>
+                            <h3 class="event-title">AI & LLM Integration Masterclass</h3>
+                            <p class="event-desc">A hands-on workshop covering prompt engineering, API integrations, and building intelligent web apps.</p>
+                        </div>
+                        <div class="event-footer">
+                            <span class="venue-info">CT Dept Seminar Hall</span>
+                            <button class="rsvp-btn" onclick="handleRSVP(this, '2', 'AI & LLM Integration Masterclass', 'Oct 22, 2026', 'CT Dept Seminar Hall')">RSVP Now</button>
+                        </div>
+                    </div>
+
+                    <!-- Event Card 3 -->
+                    <div class="event-card" data-category="Workshop" data-id="3">
+                        <div>
+                            <div class="event-header">
+                                <span class="event-badge">Workshop</span>
+                                <span class="event-date">Nov 05, 2026</span>
+                            </div>
+                            <h3 class="event-title">Git & Open Source Sprint</h3>
+                            <p class="event-desc">Learn version control fundamentals, pull requests, and make your very first open-source contribution.</p>
+                        </div>
+                        <div class="event-footer">
+                            <span class="venue-info">Computer Lab 2</span>
+                            <button class="rsvp-btn" onclick="handleRSVP(this, '3', 'Git & Open Source Sprint', 'Nov 05, 2026', 'Computer Lab 2')">RSVP Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: STUDENT DASHBOARD / MY RSVPS -->
+            <div id="tab-dashboard" class="view-section">
+                <div class="dashboard-container">
+                    <div class="dashboard-header">
+                        <h2>Student Admin & Registered Events</h2>
+                        <p>Review all your confirmed registrations and event schedules.</p>
+                    </div>
+                    <div id="dashboard-content">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Campus Connect - Computer Society of Anna University. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        let isSignUp = false;
+        let currentUser = null;
+        
+        function getUsersDB() {
+            return JSON.parse(localStorage.getItem('campus_connect_users')) || {};
+        }
+
+        function saveUsersDB(db) {
+            localStorage.setItem('campus_connect_users', JSON.stringify(db));
+        }
+
+        function getRSVPSDB() {
+            return JSON.parse(localStorage.getItem('campus_connect_rsvps')) || {};
+        }
+
+        function saveRSVPSDB(db) {
+            localStorage.setItem('campus_connect_rsvps', JSON.stringify(db));
+        }
+
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const switchText = document.getElementById('auth-switch-text');
+            const nameGroup = document.getElementById('name-group');
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+            
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            document.getElementById('auth-form').reset();
+
+            if (isSignUp) {
+                title.textContent = "Student Sign Up";
+                subtitle.textContent = "Create your portal account";
+                submitBtn.textContent = "Create Account";
+                nameGroup.style.display = "block";
+                switchText.innerHTML = `Already have an account? <span onclick="toggleAuthMode()">Sign In</span>`;
+            } else {
+                title.textContent = "Student Sign In";
+                subtitle.textContent = "Access your event portal";
+                submitBtn.textContent = "Sign In";
+                nameGroup.style.display = "none";
+                switchText.innerHTML = `Don't have an account? <span onclick="toggleAuthMode()">Sign Up</span>`;
+            }
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const nameInput = document.getElementById('reg-name').value.trim();
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            let users = getUsersDB();
+
+            if (isSignUp) {
+                // Check if user already exists
+                if (users[email]) {
+                    errorDiv.textContent = "Account already exists! Please switch to Sign In.";
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                // Register new user
+                users[email] = {
+                    name: nameInput || email.split('@')[0],
+                    password: password
+                };
+                saveUsersDB(users);
+
+                // Show success message and smoothly flip them to Sign In mode
+                successDiv.textContent = "Account created successfully! Please Sign In below.";
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    toggleAuthMode();
+                    document.getElementById('reg-email').value = email;
+                }, 1200);
+            } else {
+                // Sign In logic: Must check if registered first
+                if (!users[email]) {
+                    errorDiv.textContent = "Account not found! Please Sign Up first.";
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                if (users[email].password !== password) {
+                    errorDiv.textContent = "Incorrect password. Please try again.";
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                // Successful Sign In
+                currentUser = users[email].name;
+                sessionStorage.setItem('active_user', email);
+                enterApp(email);
+            }
+        }
+
+        function enterApp(email) {
+            document.getElementById('auth-view').style.display = 'none';
+            document.getElementById('app-view').style.display = 'flex';
+            document.getElementById('user-display').textContent = `👤 ${currentUser}`;
+            
+            checkExistingRSVPs(email);
+            renderDashboard(email);
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            sessionStorage.removeItem('active_user');
+            document.getElementById('auth-view').style.display = 'block';
+            document.getElementById('app-view').style.display = 'none';
+            document.getElementById('auth-form').reset();
+            
+            // Reset button states on UI
+            document.querySelectorAll('.rsvp-btn').forEach(btn => {
+                btn.textContent = "RSVP Now";
+                btn.classList.remove("registered");
+                btn.disabled = false;
+            });
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+
+            const email = sessionStorage.getItem('active_user');
+
+            if (tabName === 'events') {
+                document.getElementById('tab-events').classList.add('active');
+                document.getElementById('nav-events').classList.add('active');
+            } else if (tabName === 'dashboard') {
+                document.getElementById('tab-dashboard').classList.add('active');
+                document.getElementById('nav-dashboard').classList.add('active');
+                renderDashboard(email);
+            }
+        }
+
+        function filterEvents(category) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const cards = document.querySelectorAll('.event-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function handleRSVP(button, id, title, date, venue) {
+            const email = sessionStorage.getItem('active_user');
+            let rsvpsDB = getRSVPSDB();
+
+            if (!rsvpsDB[email]) {
+                rsvpsDB[email] = [];
+            }
+
+            if (!rsvpsDB[email].some(e => e.id === id)) {
+                rsvpsDB[email].push({ id, title, date, venue, timestamp: new Date().toLocaleDateString() });
+                saveRSVPSDB(rsvpsDB);
+            }
+
+            button.textContent = "Registered ✓";
+            button.classList.add("registered");
+            button.disabled = true;
+
+            updateRSVPCount(email);
+        }
+
+        function checkExistingRSVPs(email) {
+            let rsvpsDB = getRSVPSDB();
+            let userRsvps = rsvpsDB[email] || [];
+
+            // Reset all cards first
+            document.querySelectorAll('.event-card').forEach(card => {
+                const btn = card.querySelector('.rsvp-btn');
+                btn.textContent = "RSVP Now";
+                btn.classList.remove("registered");
+                btn.disabled = false;
+            });
+
+            // Mark registered ones
+            userRsvps.forEach(rsvp => {
+                const card = document.querySelector(`.event-card[data-id="${rsvp.id}"]`);
+                if (card) {
+                    const btn = card.querySelector('.rsvp-btn');
+                    btn.textContent = "Registered ✓";
+                    btn.classList.add("registered");
+                    btn.disabled = true;
+                }
+            });
+
+            updateRSVPCount(email);
+        }
+
+        function updateRSVPCount(email) {
+            let rsvpsDB = getRSVPSDB();
+            let count = (rsvpsDB[email] || []).length;
+            document.getElementById('rsvp-count').textContent = count;
+        }
+
+        function renderDashboard(email) {
+            const container = document.getElementById('dashboard-content');
+            let rsvpsDB = getRSVPSDB();
+            let userRsvps = rsvpsDB[email] || [];
+            
+            if (userRsvps.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>You haven't registered for any events yet. Explore the Events tab to RSVP!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event Title</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            userRsvps.forEach(event => {
+                html += `
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-main);">${event.title}</td>
+                        <td>${event.date}</td>
+                        <td>${event.venue}</td>
+                        <td><span style="color: #059669; font-weight: 600;">Confirmed</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
