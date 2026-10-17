@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registered Donors - VenaAether</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #d9534f;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 12px 15px;
+      text-align: left;
+    }
+    th {
+      background-color: #d9534f;
+      color: white;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .empty-row {
+      text-align: center;
+      color: #777;
+      padding: 20px;
+    }
+    .nav-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #d9534f;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🩸 Registered Blood Donors</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Age</th>
+          <th>Blood Group</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (donors && donors.length > 0) { %>
+          <% donors.forEach(donor => { %>
+            <tr>
+              <td><%= donor.name %></td>
+              <td><%= donor.email %></td>
+              <td><%= donor.phone %></td>
+              <td><%= donor.age %></td>
+              <td><%= donor.bloodGroup %></td>
+              <td><%= donor.location %></td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="empty-row">No donors registered yet.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <a href="/signup" class="nav-link">← Register Another Donor</a>
+  </div>
+</body>
+</html>

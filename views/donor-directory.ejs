@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Directory - <%= hospitalName %></title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; padding: 30px; }
+    .header { background: #ffffff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .header h1 { color: #d9534f; font-size: 22px; }
+    .container { background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #e2e8f0; padding: 12px 15px; text-align: left; font-size: 14px; }
+    th { background-color: #2c3e50; color: white; font-weight: 600; }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    .blood-badge { background: #d9534f; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+    .empty-row { text-align: center; color: #777; padding: 30px; }
+    .back-btn { display: inline-block; margin-top: 20px; color: #2c3e50; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏥 <%= hospitalName %> - Donor Database</h1>
+  </div>
+
+  <div class="container">
+    <h2>Verified Blood Donors</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Donor Name</th>
+          <th>Email</th>
+          <th>Phone Number</th>
+          <th>Age</th>
+          <th>Blood Group</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (donors && donors.length > 0) { %>
+          <% donors.forEach(donor => { %>
+            <tr>
+              <td><%= donor.name %></td>
+              <td><%= donor.email %></td>
+              <td><%= donor.phone %></td>
+              <td><%= donor.age %></td>
+              <td><span class="blood-badge"><%= donor.bloodGroup %></span></td>
+              <td><%= donor.location %></td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="6" class="empty-row">No active donors found.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+    <a href="/hospital/dashboard" class="back-btn">← Back to Admin Dashboard</a>
+  </div>
+</body>
+</html>

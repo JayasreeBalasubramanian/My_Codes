@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Profile - VenaAether</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; color: #333333; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; flex-direction: column; }
+    .container { max-width: 500px; width: 100%; }
+    
+    /* Emergency Alert Banner Styles */
+    .alert-banner { background: #fff5f5; border: 2px solid #e74c3c; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2); animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+    }
+    .alert-banner h2 { color: #c0392b; font-size: 20px; margin-bottom: 12px; }
+    .alert-banner p { font-size: 14px; color: #444; margin-bottom: 8px; line-height: 1.4; }
+    .btn-group { display: flex; gap: 12px; margin-top: 18px; }
+    .btn-accept { flex: 1; background-color: #27ae60; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; font-size: 14px; }
+    .btn-accept:hover { background-color: #219653; }
+    .btn-deny { flex: 1; background-color: #c0392b; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; font-size: 14px; }
+    .btn-deny:hover { background-color: #a93226; }
+
+    /* Profile Card Styles */
+    .card { background: #ffffff; border: 2px solid #d9534f; padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(217, 83, 79, 0.15); width: 100%; text-align: center; }
+    h1 { color: #d9534f; margin-bottom: 10px; font-size: 24px; }
+    p.subtitle { color: #666666; margin-bottom: 25px; font-size: 14px; }
+    .details-box { background: #fff5f5; border-left: 5px solid #d9534f; text-align: left; padding: 20px; border-radius: 6px; margin-bottom: 25px; }
+    .details-box p { margin: 8px 0; font-size: 15px; color: #444444; }
+    .details-box strong { color: #d9534f; }
+    .btn { display: inline-block; background-color: #d9534f; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
+    .btn:hover { background-color: #c9302c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Emergency Alert Notification (Only displays if an active patient request matches blood group & zone) -->
+    <% if (typeof activeEmergency !== 'undefined' && activeEmergency) { %>
+      <div class="alert-banner">
+        <h2>🚨 URGENT BLOOD ALERT!</h2>
+        <p><strong>Hospital:</strong> Rela Hospital, Chrompet</p>
+        <p><strong>Patient Name:</strong> <%= activeEmergency.patientName %></p>
+        <p><strong>Required Blood Group:</strong> <%= activeEmergency.bloodGroup %> (<%= activeEmergency.unitsNeeded %> Unit(s))</p>
+        <p>Your location and blood group match this emergency requirement.</p>
+        
+        <div class="btn-group">
+          <a href="/donor/respond?phone=<%= donor.phone %>&status=accepted&patient=<%= activeEmergency._id %>" class="btn-accept">Accept & Donate</a>
+          <a href="/donor/respond?phone=<%= donor.phone %>&status=denied&patient=<%= activeEmergency._id %>" class="btn-deny">Decline</a>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="card">
+      <h1>🩸 Welcome Back, <%= donor.name %>!</h1>
+      <p class="subtitle">Here are your registration details in the Rela Hospital directory.</p>
+      
+      <div class="details-box">
+        <p><strong>Name:</strong> <%= donor.name %></p>
+        <p><strong>Email:</strong> <%= donor.email %></p>
+        <p><strong>Phone:</strong> <%= donor.phone %></p>
+        <p><strong>Age:</strong> <%= donor.age %></p>
+        <p><strong>Blood Group:</strong> <%= donor.bloodGroup %></p>
+        <p><strong>Location:</strong> <%= donor.location %></p>
+      </div>
+
+      <a href="/" class="btn">Log Out / Home</a>
+    </div>
+
+  </div>
+</body>
+</html>

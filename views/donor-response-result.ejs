@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Response - VenaAether</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: #ffffff; border: 2px solid <%= status === 'accepted' ? '#27ae60' : '#d9534f' %>; padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); max-width: 450px; width: 100%; text-align: center; }
+    h1 { color: <%= status === 'accepted' ? '#27ae60' : '#d9534f' %>; margin-bottom: 15px; font-size: 22px; }
+    p { color: #555; font-size: 15px; line-height: 1.5; margin-bottom: 20px; }
+    .highlight { font-weight: bold; color: #333; }
+    .btn { display: inline-block; background-color: #2c3e50; color: white; padding: 10px 25px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
+    .btn:hover { background-color: #1a252f; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <% if (status === 'accepted') { %>
+      <h1>✅ Thank You for Accepting!</h1>
+      <p>Dear <span class="highlight"><%= donor ? donor.name : 'Donor' %></span>, your response has been recorded. Rela Hospital, Chrompet appreciates your willingness to save a life for patient <span class="highlight"><%= patientRecord ? patientRecord.patientName : 'Emergency' %></span>.</p>
+      <p style="font-size: 13px; color: #777;">Please head to the hospital blood bank ward as soon as possible.</p>
+    <% } else { %>
+      <h1>❌ Response Recorded (Declined)</h1>
+      <p>Dear <span class="highlight"><%= donor ? donor.name : 'Donor' %></span>, we have noted your response. Thank you for being part of the VenaAether network for Rela Hospital.</p>
+    <% } %>
+    <a href="/" class="btn">Return to Home</a>
+  </div>
+</body>
+</html>
