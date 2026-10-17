@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VenaAether - Blood Donor Match</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 450px;
+    }
+    h1 { color: #d9534f; margin-bottom: 10px; font-size: 26px; }
+    p { color: #666; margin-bottom: 30px; font-size: 14px; }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    .btn-signup { background-color: #3498db; color: white; }
+    .btn-signup:hover { background-color: #2980b9; }
+    .btn-login { background-color: #e67e22; color: white; }
+    .btn-login:hover { background-color: #d35400; }
+    .btn-admin { background-color: #2c3e50; color: white; }
+    .btn-admin:hover { background-color: #1a252f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🩸 VenaAether</h1>
+    <p>Instant Medical Blood Matchmaking Platform</p>
+    
+    <a href="/signup" class="btn btn-signup">Register as Blood Donor</a>
+    <a href="/login" class="btn btn-login">Donor Login</a>
+    <a href="/hospital/login" class="btn btn-admin">Hospital Admin Portal</a>
+  </div>
+</body>
+</html>

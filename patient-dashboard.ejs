@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Emergency Requests - <%= hospitalName %></title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; color: #333; padding: 30px; }
+    .header { background: #ffffff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+    .header h1 { color: #d9534f; font-size: 22px; }
+    .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+    @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+    .panel { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+    button { width: 100%; background: #d9534f; color: white; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #c9302c; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; font-size: 13px; }
+    th { background-color: #2c3e50; color: white; }
+    .urgency-badge { background: #e74c3c; color: white; padding: 3px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+    .back-btn { display: inline-block; margin-top: 20px; color: #2c3e50; text-decoration: none; font-weight: 600; }
+  </style> <!-- Make sure this style tag is properly closed here -->
+</head>
+<body>
+  <div class="header">
+    <h1>🏥 <%= hospitalName %> - Patient Blood Requests</h1>
+  </div>
+
+  <div class="grid-layout">
+    <!-- Add Patient Form -->
+    <div class="panel">
+      <h3>Admit Patient Request</h3>
+      <form action="/hospital/patients/add" method="POST" style="margin-top: 15px;">
+        <div class="form-group">
+          <label>Patient Name</label>
+          <input type="text" name="patientName" placeholder="Enter patient name" required>
+        </div>
+        <div class="form-group">
+          <label>Required Blood Group</label>
+          <input type="text" name="bloodGroup" placeholder="e.g. O+, B-" required>
+        </div>
+        <div class="form-group">
+          <label>Units Needed</label>
+          <input type="number" name="unitsNeeded" placeholder="e.g. 2" required>
+        </div>
+        <div class="form-group">
+          <label>Urgency Level</label>
+          <select name="urgency">
+            <option value="Critical">Critical</option>
+            <option value="Immediate">Immediate</option>
+            <option value="Moderate">Moderate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ward / Bed Location</label>
+          <input type="text" name="ward" placeholder="e.g. ICU Bed 4" required>
+        </div>
+        <button type="submit">Add Patient Request</button>
+      </form>
+    </div>
+
+    <!-- Patient Records Table -->
+    <div class="panel">
+      <h3>Active Patient Requirements</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Blood</th>
+            <th>Units</th>
+            <th>Urgency</th>
+            <th>Ward</th>
+            <th>Donor Responses</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (patients && patients.length > 0) { %>
+            <% patients.forEach(patient => { %>
+              <tr>
+                <td><%= patient.name %></td>
+                <td><span style="font-weight:bold; color:#d9534f;"><%= patient.bloodGroup %></span></td>
+                <td><%= patient.unitsNeeded %></td>
+                <td><span class="urgency-badge"><%= patient.urgency %></span></td>
+                <td><%= patient.ward %></td>
+                <td>
+                  <% if (patient.responses && patient.responses.length > 0) { %>
+                    <ul style="padding-left: 15px; margin: 0; list-style-type: none;">
+                      <% patient.responses.forEach(resp => { %>
+                        <li style="margin-bottom: 4px; font-size: 12px;">
+                          <strong><%= resp.donorName %></strong>: 
+                          <span style="color: <%= resp.status === 'Accepted' ? '#28a745' : '#dc3545' %>; font-weight: bold;">
+                            <%= resp.status %>
+                          </span>
+                        </li>
+                      <% }) %>
+                    </ul>
+                  <% } else { %>
+                    <span style="color: #888; font-style: italic; font-size: 12px;">Waiting for responses...</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr><td colspan="6" style="text-align:center; color:#777; padding:20px;">No emergency patient requests logged.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <a href="/hospital/dashboard" class="back-btn">← Back to Admin Dashboard</a>
+  </div>
+</body>
+</html>
