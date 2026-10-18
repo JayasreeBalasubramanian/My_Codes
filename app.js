@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const Donor = require('./models/Donor');
 const Patient = require('./models/Patient');
 const app = express();
-const serverHost = 'https://polka-bonfire-confirm.ngrok-free.dev';
+const serverHost = 'https://mycodes-nine.vercel.app';
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
