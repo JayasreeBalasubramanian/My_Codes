@@ -6,7 +6,8 @@ const nodemailer = require('nodemailer');
 const Donor = require('./models/Donor');
 const Patient = require('./models/Patient');
 const app = express();
-const serverHost = 'https://mycodes-nine.vercel.app';
+// Inside your app.post('/hospital/patients/add', ...) route where emails are sent:
+const serverHost = `${req.protocol}://${req.get('host')}`;
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
